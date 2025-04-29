@@ -15,11 +15,27 @@ type mockSecretValue struct {
 	Fail  bool   `json:"fail"`
 }
 
-func (m mockSecretValue) Data() ([]byte, error) {
+func (m mockSecretValue) GetData() ([]byte, error) {
 	if m.Fail {
 		return nil, errors.New("fail")
 	}
 	return []byte(m.Value), nil
+}
+
+func (m mockSecretValue) SetData(data []byte) error {
+	if m.Fail {
+		return errors.New("fail")
+	}
+	var v struct {
+		Value string `json:"value"`
+		Fail  bool   `json:"fail"`
+	}
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	m.Value = v.Value
+	m.Fail = v.Fail
+	return nil
 }
 
 type mockSecretsManagerClient struct {
