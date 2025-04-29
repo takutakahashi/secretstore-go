@@ -2,7 +2,6 @@ package manager
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -51,16 +50,6 @@ func (c AWSSecretManagerClient[T]) Get(ctx context.Context, name string) (T, err
 	}
 	fmt.Printf("get secret: %+v\n", string(secret.SecretBinary))
 	return FromBinary[T](secret.SecretBinary)
-}
-
-func FromBinary[T SecretValue](data []byte) (T, error) {
-	var result T
-	err := json.Unmarshal(data, &result)
-	if err != nil {
-		var zero T
-		return zero, err
-	}
-	return result, nil
 }
 
 func (c AWSSecretManagerClient[T]) Delete(ctx context.Context, name string) error {
