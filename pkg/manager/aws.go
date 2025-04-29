@@ -3,6 +3,7 @@ package manager
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
@@ -38,13 +39,17 @@ func (c AWSSecretManagerClient[T]) Create(ctx context.Context, name string, data
 }
 
 func (c AWSSecretManagerClient[T]) Get(ctx context.Context, name string) (T, error) {
+	var zero T
 	secret, err := c.client.GetSecretValue(ctx, &secretsmanager.GetSecretValueInput{
 		SecretId: aws.String(name),
 	})
 	if err != nil {
-		var zero T
 		return zero, err
 	}
+	if secret.SecretBinary == nil {
+		return zero, fmt.Errorf("secret binary is nil")
+	}
+	fmt.Printf("get secret: %+v\n", string(secret.SecretBinary))
 	return FromBinary[T](secret.SecretBinary)
 }
 

@@ -3,7 +3,8 @@ package manager
 import "context"
 
 type SecretValue interface {
-	Data() ([]byte, error)
+	GetData() ([]byte, error)
+	SetData([]byte) error
 }
 
 type Client[T SecretValue] interface {
