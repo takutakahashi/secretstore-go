@@ -12,6 +12,10 @@ func NewEnvSecret(envVars map[string]string) *EnvSecret {
 	}
 }
 
-func (s EnvSecret) Data() ([]byte, error) {
+func (s EnvSecret) GetData() ([]byte, error) {
 	return json.Marshal(s.envVars)
+}
+
+func (s *EnvSecret) SetData(data []byte) error {
+	return json.Unmarshal(data, &s.envVars)
 }

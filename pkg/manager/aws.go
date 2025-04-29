@@ -27,7 +27,7 @@ func NewAWSSecretManagerClient[T SecretValue](client SecretsManagerAPI) *AWSSecr
 }
 
 func (c AWSSecretManagerClient[T]) Create(ctx context.Context, name string, data T) error {
-	binary, err := data.Data()
+	binary, err := data.GetData()
 	if err != nil {
 		return err
 	}
@@ -71,7 +71,7 @@ func (c AWSSecretManagerClient[T]) Delete(ctx context.Context, name string) erro
 }
 
 func (c AWSSecretManagerClient[T]) Update(ctx context.Context, name string, data T) error {
-	binary, err := data.Data()
+	binary, err := data.GetData()
 	if err != nil {
 		return err
 	}
